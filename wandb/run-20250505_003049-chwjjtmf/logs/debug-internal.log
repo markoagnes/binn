@@ -1,0 +1,7 @@
+{"time":"2025-05-05T00:30:49.333795779+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/home/markoa/workspace/wandb/run-20250505_003049-chwjjtmf/logs/debug-core.log"}
+{"time":"2025-05-05T00:30:49.609049615+02:00","level":"INFO","msg":"created new stream","id":"chwjjtmf"}
+{"time":"2025-05-05T00:30:49.609115658+02:00","level":"INFO","msg":"stream: started","id":"chwjjtmf"}
+{"time":"2025-05-05T00:30:49.60916292+02:00","level":"INFO","msg":"sender: started","stream_id":"chwjjtmf"}
+{"time":"2025-05-05T00:30:49.609208314+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"chwjjtmf"}
+{"time":"2025-05-05T00:30:49.609224963+02:00","level":"INFO","msg":"handler: started","stream_id":"chwjjtmf"}
+{"time":"2025-05-05T00:30:49.868057734+02:00","level":"INFO","msg":"Starting system monitor"}

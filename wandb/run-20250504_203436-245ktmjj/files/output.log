@@ -1,0 +1,322 @@
+Loading graph from: /home/markoa/workspace/data/ProstateCancer/go-basic.obo
+Graph loaded: 40214 nodes, 77600 edges.
+
+Pruning graph to include only specified root nodes: 2
+Keeping 36191 nodes connected to specified root nodes.
+Removing 4023 nodes not connected to specified root nodes.
+Pruning complete.
+Nodes: 40214 -> 36191 (4023 removed)
+Edges: 77600 -> 71188 (6412 removed)
+
+Calculating hierarchy levels...
+Found 2 root nodes (terms with no children):
+• GO:0003674: molecular_function
+• GO:0008150: biological_process
+Processing 2 nodes at level 0
+Processing 19436 nodes at level 5
+Processing 7602 nodes at level 10
+Processing 367 nodes at level 15
+Hierarchy calculation complete. Max level: 18
+Nodes per hierarchy level:
+  Level 0: 2 nodes
+  Level 1: 49 nodes
+  Level 2: 289 nodes
+  Level 3: 1099 nodes
+  Level 4: 2682 nodes
+  Level 5: 6239 nodes
+  Level 6: 5094 nodes
+  Level 7: 4764 nodes
+  Level 8: 4398 nodes
+  Level 9: 3807 nodes
+  Level 10: 3054 nodes
+  Level 11: 2153 nodes
+  Level 12: 1267 nodes
+  Level 13: 611 nodes
+  Level 14: 316 nodes
+  Level 15: 195 nodes
+  Level 16: 109 nodes
+  Level 17: 58 nodes
+  Level 18: 5 nodes
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 36191
+Layer start indices: [0, 2, 51, 340, 1439, 4121, 10360, 15454, 20218, 24616, 28423, 31477, 33630, 34897, 35508, 35824, 36019, 36128, 36186, 36191]
+
+Example indices:
+ Level 0:
+  • GO:0003674 (Index 0): molecular_function
+  • GO:0008150 (Index 1): biological_process
+ Level 1:
+  • GO:0002376 (Index 2): immune system process
+  • GO:0003774 (Index 3): cytoskeletal motor activity
+  • GO:0003824 (Index 4): catalytic activity
+ Level 2:
+  • GO:0000156 (Index 51): phosphorelay response regulator activity
+  • GO:0000995 (Index 52): RNA polymerase III general transcription initiation factor activity
+  • GO:0001070 (Index 53): RNA-binding transcription regulator activity
+
+Pruning graph to max hierarchy level 10...
+Removing 4714 nodes.
+Pruning complete.
+Nodes: 36191 -> 31477 (4714 removed)
+Edges: 71188 -> 58696 (12492 removed)
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 31477
+Layer start indices: [0, 2, 51, 340, 1439, 4121, 10360, 15454, 20218, 24616, 28423, 31477]
+
+Example indices:
+ Level 0:
+  • GO:0003674 (Index 0): molecular_function
+  • GO:0008150 (Index 1): biological_process
+ Level 1:
+  • GO:0002376 (Index 2): immune system process
+  • GO:0003774 (Index 3): cytoskeletal motor activity
+  • GO:0003824 (Index 4): catalytic activity
+ Level 2:
+  • GO:0000156 (Index 51): phosphorelay response regulator activity
+  • GO:0000995 (Index 52): RNA polymerase III general transcription initiation factor activity
+  • GO:0001070 (Index 53): RNA-binding transcription regulator activity
+Sequential indices and edge index recalculated for the pruned graph.
+Available columns in GAF DataFrame:
+['DB', 'DB_Object_ID', 'DB_Object_Symbol', 'Qualifier', 'GO_ID', 'DB_Reference', 'Evidence_Code', 'With_From', 'Aspect', 'DB_Object_Name', 'DB_Object_Synonym', 'DB_Object_Type', 'Taxon', 'Date', 'Assigned_By', 'Annotation_Extension', 'Gene_Product_Form_ID', 'Replacement_GO_ID']
+
+Adding protein layer starting at index 31477
+Added 8911 proteins to the graph
+Created 130021 protein-GO term edges
+Skipped 150902 annotations with GO terms not in the graph
+
+Calculating excluded proteins (UniProt IDs)...
+Initial intended UniProt IDs list size: 9131
+UniProt IDs added to graph layer: 8911
+UniProt IDs excluded (intended but not added): 220
+Found 8911 protein nodes at hierarchy level 11
+Starting forward traversal from protein nodes...
+Original graph: 40388 nodes, 188717 edges
+Pruned graph: 23908 nodes, 158716 edges
+Removed 16480 unreachable nodes (40.8% of total)
+
+Nodes by hierarchy level:
+Level    Before   Removed  After    % Removed
+---------------------------------------------
+Level 0  2        0        2        0.0%
+Level 1  49       6        43       12.2%
+Level 2  289      93       196      32.2%
+Level 3  1099     375      724      34.1%
+Level 4  2682     1266     1416     47.2%
+Level 5  6239     3940     2299     63.2%
+Level 6  5094     2643     2451     51.9%
+Level 7  4764     2402     2362     50.4%
+Level 8  4398     2214     2184     50.3%
+Level 9  3807     1974     1833     51.9%
+Level 10 3054     1567     1487     51.3%
+Protein  8911     0        8911     0.0%
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 23908
+Layer start indices: [0, 2, 45, 241, 965, 2381, 4680, 7131, 9493, 11677, 13510, 14997, 23908]
+
+Example indices:
+ Level 0:
+  • GO:0003674 (Index 0): molecular_function
+  • GO:0008150 (Index 1): biological_process
+ Level 1:
+  • GO:0002376 (Index 2): immune system process
+  • GO:0003774 (Index 3): cytoskeletal motor activity
+  • GO:0003824 (Index 4): catalytic activity
+ Level 2:
+  • GO:0000995 (Index 45): RNA polymerase III general transcription initiation factor activity
+  • GO:0001503 (Index 46): ossification
+  • GO:0001775 (Index 47): cell activation
+
+Removing first layer (level 0) from the graph...
+Removed 7 protein nodes connected only to level 0.
+Number of protein nodes after removal: 8904
+Original graph: 23906 nodes, 158606 edges
+Pruned graph: 23899 nodes, 158606 edges
+
+Nodes by hierarchy level after removal:
+Level    After
+--------------------
+Level 0  43
+Level 1  196
+Level 2  724
+Level 3  1416
+Level 4  2299
+Level 5  2451
+Level 6  2362
+Level 7  2184
+Level 8  1833
+Level 9  1487
+Protein  8904
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 23899
+Layer start indices: [0, 43, 239, 963, 2379, 4678, 7129, 9491, 11675, 13508, 14995, 23899]
+
+Example indices:
+ Level 0:
+  • GO:0002376 (Index 0): immune system process
+  • GO:0003774 (Index 1): cytoskeletal motor activity
+  • GO:0003824 (Index 2): catalytic activity
+ Level 1:
+  • GO:0000995 (Index 43): RNA polymerase III general transcription initiation factor activity
+  • GO:0001503 (Index 44): ossification
+  • GO:0001775 (Index 45): cell activation
+ Level 2:
+  • GO:0000035 (Index 239): acyl binding
+  • GO:0000149 (Index 240): SNARE binding
+  • GO:0000278 (Index 241): mitotic cell cycle
+Removed 2 nodes from level 0.
+New max hierarchy level: 10
+Sequential indices recalculated.
+
+Creating edge index matrix...
+Edge index created. Total edges in index: 158606
+
+Example edges (source_idx -> target_idx):
+  [4678 -> 2822] : (GO:0000002 -> GO:0007005)
+  [4679 -> 2380] : (GO:0000009 -> GO:0000030)
+  [9491 -> 7439] : (GO:0000012 -> GO:0006281)
+  [7129 -> 4922] : (GO:0000014 -> GO:0004520)
+  [2379 -> 1077] : (GO:0000016 -> GO:0004553)
+Shape of X: (1012, 9131)
+Count of input genes: 9131
+Shape of X: (1012, 9131)
+Count of input genes: 9131
+Shape of X_cnv: (1012, 9131)
+Shape of y_cnv: (1012, 1)
+Number of input genes used: 9131
+Number of features to KEEP based on PathwayNetwork additions: 8904
+Number of normalized features to KEEP: 8904
+Extracted 9131 IDs from column 'gene' in features_cnv DataFrame.
+Number of features kept using 'added' set (with normalization): 8904
+Shape of aligned X_cnv: (1012, 8904)
+X_train shape: (809, 8904), y_train shape: (809, 1)
+X_test shape: (203, 8904), y_test shape: (203, 1)
+Train dataset size: 809, Test dataset size: 203
+Number of train batches: 102, Number of test batches: 26
+Using device: cuda
+Epoch [1/50], Batch [10/102], Avg Loss (last 10): 0.6928
+Epoch [1/50], Batch [20/102], Avg Loss (last 10): 0.6909
+Epoch [1/50], Batch [30/102], Avg Loss (last 10): 0.6904
+Epoch [1/50], Batch [40/102], Avg Loss (last 10): 0.6904
+Epoch [1/50], Batch [50/102], Avg Loss (last 10): 0.6901
+Epoch [1/50], Batch [60/102], Avg Loss (last 10): 0.6883
+Epoch [1/50], Batch [70/102], Avg Loss (last 10): 0.6829
+Epoch [1/50], Batch [80/102], Avg Loss (last 10): 0.6898
+Epoch [1/50], Batch [90/102], Avg Loss (last 10): 0.6843
+Epoch [1/50], Batch [100/102], Avg Loss (last 10): 0.6818
+Epoch [1/50] Average Training Loss: 0.6879
+Epoch [2/50], Batch [10/102], Avg Loss (last 10): 0.6835
+Epoch [2/50], Batch [20/102], Avg Loss (last 10): 0.6770
+Epoch [2/50], Batch [30/102], Avg Loss (last 10): 0.6807
+Epoch [2/50], Batch [40/102], Avg Loss (last 10): 0.6875
+Epoch [2/50], Batch [50/102], Avg Loss (last 10): 0.6884
+Epoch [2/50], Batch [60/102], Avg Loss (last 10): 0.6664
+Epoch [2/50], Batch [70/102], Avg Loss (last 10): 0.6736
+Epoch [2/50], Batch [80/102], Avg Loss (last 10): 0.6693
+Epoch [2/50], Batch [90/102], Avg Loss (last 10): 0.6738
+Epoch [2/50], Batch [100/102], Avg Loss (last 10): 0.6761
+Epoch [2/50] Average Training Loss: 0.6783
+Epoch [3/50], Batch [10/102], Avg Loss (last 10): 0.6702
+Epoch [3/50], Batch [20/102], Avg Loss (last 10): 0.6624
+Epoch [3/50], Batch [30/102], Avg Loss (last 10): 0.6664
+Epoch [3/50], Batch [40/102], Avg Loss (last 10): 0.6613
+Epoch [3/50], Batch [50/102], Avg Loss (last 10): 0.6720
+Epoch [3/50], Batch [60/102], Avg Loss (last 10): 0.6651
+Epoch [3/50], Batch [70/102], Avg Loss (last 10): 0.6687
+Epoch [3/50], Batch [80/102], Avg Loss (last 10): 0.6771
+Epoch [3/50], Batch [90/102], Avg Loss (last 10): 0.6720
+Epoch [3/50], Batch [100/102], Avg Loss (last 10): 0.6787
+Epoch [3/50] Average Training Loss: 0.6686
+Epoch [4/50], Batch [10/102], Avg Loss (last 10): 0.6689
+Epoch [4/50], Batch [20/102], Avg Loss (last 10): 0.6807
+Epoch [4/50], Batch [30/102], Avg Loss (last 10): 0.6605
+Epoch [4/50], Batch [40/102], Avg Loss (last 10): 0.6546
+Epoch [4/50], Batch [50/102], Avg Loss (last 10): 0.6535
+Epoch [4/50], Batch [60/102], Avg Loss (last 10): 0.6662
+Epoch [4/50], Batch [70/102], Avg Loss (last 10): 0.6657
+Epoch [4/50], Batch [80/102], Avg Loss (last 10): 0.6595
+Epoch [4/50], Batch [90/102], Avg Loss (last 10): 0.6529
+Epoch [4/50], Batch [100/102], Avg Loss (last 10): 0.6581
+Epoch [4/50] Average Training Loss: 0.6610
+Epoch [5/50], Batch [10/102], Avg Loss (last 10): 0.6635
+Epoch [5/50], Batch [20/102], Avg Loss (last 10): 0.6694
+Epoch [5/50], Batch [30/102], Avg Loss (last 10): 0.6629
+Epoch [5/50], Batch [40/102], Avg Loss (last 10): 0.6591
+Epoch [5/50], Batch [50/102], Avg Loss (last 10): 0.6520
+Epoch [5/50], Batch [60/102], Avg Loss (last 10): 0.6651
+Epoch [5/50], Batch [70/102], Avg Loss (last 10): 0.6508
+Epoch [5/50], Batch [80/102], Avg Loss (last 10): 0.6538
+Epoch [5/50], Batch [90/102], Avg Loss (last 10): 0.6317
+Epoch [5/50], Batch [100/102], Avg Loss (last 10): 0.6525
+Epoch [5/50] Average Training Loss: 0.6574
+Epoch [6/50], Batch [10/102], Avg Loss (last 10): 0.6631
+Epoch [6/50], Batch [20/102], Avg Loss (last 10): 0.6478
+Epoch [6/50], Batch [30/102], Avg Loss (last 10): 0.6280
+Epoch [6/50], Batch [40/102], Avg Loss (last 10): 0.6465
+Epoch [6/50], Batch [50/102], Avg Loss (last 10): 0.6498
+Epoch [6/50], Batch [60/102], Avg Loss (last 10): 0.6697
+Epoch [6/50], Batch [70/102], Avg Loss (last 10): 0.6367
+Epoch [6/50], Batch [80/102], Avg Loss (last 10): 0.6444
+Epoch [6/50], Batch [90/102], Avg Loss (last 10): 0.6652
+Epoch [6/50], Batch [100/102], Avg Loss (last 10): 0.6649
+Epoch [6/50] Average Training Loss: 0.6502
+Epoch [7/50], Batch [10/102], Avg Loss (last 10): 0.6605
+Epoch [7/50], Batch [20/102], Avg Loss (last 10): 0.6604
+Epoch [7/50], Batch [30/102], Avg Loss (last 10): 0.6469
+Epoch [7/50], Batch [40/102], Avg Loss (last 10): 0.6555
+Epoch [7/50], Batch [50/102], Avg Loss (last 10): 0.6508
+Epoch [7/50], Batch [60/102], Avg Loss (last 10): 0.6460
+Epoch [7/50], Batch [70/102], Avg Loss (last 10): 0.6549
+Epoch [7/50], Batch [80/102], Avg Loss (last 10): 0.6267
+Epoch [7/50], Batch [90/102], Avg Loss (last 10): 0.6308
+Epoch [7/50], Batch [100/102], Avg Loss (last 10): 0.6301
+Epoch [7/50] Average Training Loss: 0.6461
+Epoch [8/50], Batch [10/102], Avg Loss (last 10): 0.6730
+Epoch [8/50], Batch [20/102], Avg Loss (last 10): 0.6389
+Epoch [8/50], Batch [30/102], Avg Loss (last 10): 0.6533
+Epoch [8/50], Batch [40/102], Avg Loss (last 10): 0.6232
+Epoch [8/50], Batch [50/102], Avg Loss (last 10): 0.6073
+Epoch [8/50], Batch [60/102], Avg Loss (last 10): 0.6473
+Epoch [8/50], Batch [70/102], Avg Loss (last 10): 0.6626
+Epoch [8/50], Batch [80/102], Avg Loss (last 10): 0.6208
+Epoch [8/50], Batch [90/102], Avg Loss (last 10): 0.6730
+Epoch [8/50], Batch [100/102], Avg Loss (last 10): 0.6465
+Epoch [8/50] Average Training Loss: 0.6429
+Epoch [9/50], Batch [10/102], Avg Loss (last 10): 0.6248
+Epoch [9/50], Batch [20/102], Avg Loss (last 10): 0.6622
+Epoch [9/50], Batch [30/102], Avg Loss (last 10): 0.6405
+Epoch [9/50], Batch [40/102], Avg Loss (last 10): 0.6181
+Epoch [9/50], Batch [50/102], Avg Loss (last 10): 0.6287
+Epoch [9/50], Batch [60/102], Avg Loss (last 10): 0.6340
+Epoch [9/50], Batch [70/102], Avg Loss (last 10): 0.7016
+Epoch [9/50], Batch [80/102], Avg Loss (last 10): 0.6450
+Epoch [9/50], Batch [90/102], Avg Loss (last 10): 0.6449
+Epoch [9/50], Batch [100/102], Avg Loss (last 10): 0.6276
+Epoch [9/50] Average Training Loss: 0.6403
+Epoch [10/50], Batch [10/102], Avg Loss (last 10): 0.6676
+Epoch [10/50], Batch [20/102], Avg Loss (last 10): 0.6503
+Epoch [10/50], Batch [30/102], Avg Loss (last 10): 0.6501
+Epoch [10/50], Batch [40/102], Avg Loss (last 10): 0.6677
+Epoch [10/50], Batch [50/102], Avg Loss (last 10): 0.6442
+Epoch [10/50], Batch [60/102], Avg Loss (last 10): 0.6087
+Epoch [10/50], Batch [70/102], Avg Loss (last 10): 0.6140
+Epoch [10/50], Batch [80/102], Avg Loss (last 10): 0.6015
+Epoch [10/50], Batch [90/102], Avg Loss (last 10): 0.6678
+Epoch [10/50], Batch [100/102], Avg Loss (last 10): 0.6310
+Epoch [10/50] Average Training Loss: 0.6383
+Epoch [11/50], Batch [10/102], Avg Loss (last 10): 0.6554
+Epoch [11/50], Batch [20/102], Avg Loss (last 10): 0.6492
+Epoch [11/50], Batch [30/102], Avg Loss (last 10): 0.6803
+Epoch [11/50], Batch [40/102], Avg Loss (last 10): 0.6367
+Epoch [11/50], Batch [50/102], Avg Loss (last 10): 0.6053
+Epoch [11/50], Batch [60/102], Avg Loss (last 10): 0.6049
+Epoch [11/50], Batch [70/102], Avg Loss (last 10): 0.5786
+Epoch [11/50], Batch [80/102], Avg Loss (last 10): 0.6551
+Epoch [11/50], Batch [90/102], Avg Loss (last 10): 0.6747
+Epoch [11/50], Batch [100/102], Avg Loss (last 10): 0.6420
+Epoch [11/50] Average Training Loss: 0.6412
+Epoch [12/50], Batch [10/102], Avg Loss (last 10): 0.6355
+Epoch [12/50], Batch [20/102], Avg Loss (last 10): 0.6420

@@ -1,0 +1,1 @@
+{"_step":599,"_runtime":1073.48889013,"epoch/avg_loss":0.6333253745939217,"_timestamp":1.7463950905099404e+09,"batch/avg_loss_10":0.6324756592512131,"batch":5097,"learning_rate":3.125e-05,"_wandb":{"runtime":1073},"epoch":50}

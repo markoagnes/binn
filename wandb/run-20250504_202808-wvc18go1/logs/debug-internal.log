@@ -1,0 +1,7 @@
+{"time":"2025-05-04T20:28:08.575302946+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/home/markoa/workspace/wandb/run-20250504_202808-wvc18go1/logs/debug-core.log"}
+{"time":"2025-05-04T20:28:08.842468125+02:00","level":"INFO","msg":"created new stream","id":"wvc18go1"}
+{"time":"2025-05-04T20:28:08.842511865+02:00","level":"INFO","msg":"stream: started","id":"wvc18go1"}
+{"time":"2025-05-04T20:28:08.842534947+02:00","level":"INFO","msg":"sender: started","stream_id":"wvc18go1"}
+{"time":"2025-05-04T20:28:08.84255684+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"wvc18go1"}
+{"time":"2025-05-04T20:28:08.842623462+02:00","level":"INFO","msg":"handler: started","stream_id":"wvc18go1"}
+{"time":"2025-05-04T20:28:09.076318132+02:00","level":"INFO","msg":"Starting system monitor"}

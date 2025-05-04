@@ -1,0 +1,7 @@
+{"time":"2025-05-04T22:26:09.688323475+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/home/markoa/workspace/wandb/run-20250504_222609-xolitsmq/logs/debug-core.log"}
+{"time":"2025-05-04T22:26:10.000264845+02:00","level":"INFO","msg":"created new stream","id":"xolitsmq"}
+{"time":"2025-05-04T22:26:10.000312035+02:00","level":"INFO","msg":"stream: started","id":"xolitsmq"}
+{"time":"2025-05-04T22:26:10.000329941+02:00","level":"INFO","msg":"sender: started","stream_id":"xolitsmq"}
+{"time":"2025-05-04T22:26:10.000371763+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"xolitsmq"}
+{"time":"2025-05-04T22:26:10.000528361+02:00","level":"INFO","msg":"handler: started","stream_id":"xolitsmq"}
+{"time":"2025-05-04T22:26:10.252364478+02:00","level":"INFO","msg":"Starting system monitor"}

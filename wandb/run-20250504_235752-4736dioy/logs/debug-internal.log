@@ -1,0 +1,16 @@
+{"time":"2025-05-04T23:57:52.640068378+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/home/markoa/workspace/wandb/run-20250504_235752-4736dioy/logs/debug-core.log"}
+{"time":"2025-05-04T23:57:52.913253682+02:00","level":"INFO","msg":"created new stream","id":"4736dioy"}
+{"time":"2025-05-04T23:57:52.913327983+02:00","level":"INFO","msg":"stream: started","id":"4736dioy"}
+{"time":"2025-05-04T23:57:52.913419684+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"4736dioy"}
+{"time":"2025-05-04T23:57:52.913431306+02:00","level":"INFO","msg":"sender: started","stream_id":"4736dioy"}
+{"time":"2025-05-04T23:57:52.913573702+02:00","level":"INFO","msg":"handler: started","stream_id":"4736dioy"}
+{"time":"2025-05-04T23:57:53.133635049+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-05T00:15:38.470040846+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-05T00:15:38.470141295+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-05T00:15:39.433397781+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-05T00:15:39.476121789+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading history steps 598-599, summary, console lines 750-750","runtime_seconds":0.042556666}],"total_operations":1}}
+{"time":"2025-05-05T00:15:39.64906648+02:00","level":"INFO","msg":"stream: closing","id":"4736dioy"}
+{"time":"2025-05-05T00:15:39.649098014+02:00","level":"INFO","msg":"handler: closed","stream_id":"4736dioy"}
+{"time":"2025-05-05T00:15:39.649146845+02:00","level":"INFO","msg":"sender: closed","stream_id":"4736dioy"}
+{"time":"2025-05-05T00:15:39.64914071+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"4736dioy"}
+{"time":"2025-05-05T00:15:39.649294725+02:00","level":"INFO","msg":"stream: closed","id":"4736dioy"}

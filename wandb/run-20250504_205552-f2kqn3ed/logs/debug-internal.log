@@ -1,0 +1,16 @@
+{"time":"2025-05-04T20:55:52.219167038+02:00","level":"INFO","msg":"stream: starting","core version":"0.19.10","symlink path":"/home/markoa/workspace/wandb/run-20250504_205552-f2kqn3ed/logs/debug-core.log"}
+{"time":"2025-05-04T20:55:52.522603482+02:00","level":"INFO","msg":"created new stream","id":"f2kqn3ed"}
+{"time":"2025-05-04T20:55:52.522658795+02:00","level":"INFO","msg":"stream: started","id":"f2kqn3ed"}
+{"time":"2025-05-04T20:55:52.524240128+02:00","level":"INFO","msg":"sender: started","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T20:55:52.524315939+02:00","level":"INFO","msg":"handler: started","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T20:55:52.524340316+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T20:55:52.761384619+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-04T21:36:52.600758431+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-04T21:36:52.600855872+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-04T21:36:53.607813564+02:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading output.log","runtime_seconds":0.608685407,"progress":"37.6KB/37.6KB"},{"desc":"uploading config.yaml","runtime_seconds":0.455692175,"progress":"698B/698B"}],"total_operations":2}}
+{"time":"2025-05-04T21:36:53.791754728+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-04T21:36:53.984362998+02:00","level":"INFO","msg":"stream: closing","id":"f2kqn3ed"}
+{"time":"2025-05-04T21:36:53.984387329+02:00","level":"INFO","msg":"handler: closed","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T21:36:53.984403928+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T21:36:53.984484364+02:00","level":"INFO","msg":"sender: closed","stream_id":"f2kqn3ed"}
+{"time":"2025-05-04T21:36:53.984503988+02:00","level":"INFO","msg":"stream: closed","id":"f2kqn3ed"}

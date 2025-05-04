@@ -1,0 +1,38 @@
+{
+  "os": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+  "python": "CPython 3.10.12",
+  "startedAt": "2025-05-04T18:44:41.534459Z",
+  "program": "/home/markoa/workspace/model/create_neural_net.py",
+  "codePath": "model/create_neural_net.py",
+  "email": "marko.agnes@icloud.com",
+  "root": "/home/markoa/workspace",
+  "host": "phoenix2",
+  "executable": "/home/markoa/workspace/.venv/bin/python",
+  "codePathLocal": "model/create_neural_net.py",
+  "cpu_count": 6,
+  "cpu_count_logical": 12,
+  "gpu": "NVIDIA TITAN Xp",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "250375106560",
+      "used": "18778259456"
+    }
+  },
+  "memory": {
+    "total": "67358662656"
+  },
+  "cpu": {
+    "count": 6,
+    "countLogical": 12
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA TITAN Xp",
+      "memoryTotal": "12884901888",
+      "cudaCores": 3840,
+      "architecture": "Pascal"
+    }
+  ],
+  "cudaVersion": "12.2"
+}

@@ -1,0 +1,87 @@
+Loading graph from: /home/markoa/workspace/data/ProstateCancer/go-basic.obo
+Graph loaded: 40214 nodes, 77600 edges.
+
+Pruning graph to include only specified root nodes: 2
+Keeping 36191 nodes connected to specified root nodes.
+Removing 4023 nodes not connected to specified root nodes.
+Pruning complete.
+Nodes: 40214 -> 36191 (4023 removed)
+Edges: 77600 -> 71188 (6412 removed)
+
+Calculating hierarchy levels...
+Found 2 root nodes (terms with no children):
+• GO:0003674: molecular_function
+• GO:0008150: biological_process
+Processing 2 nodes at level 0
+Processing 19436 nodes at level 5
+Processing 7602 nodes at level 10
+Processing 367 nodes at level 15
+Hierarchy calculation complete. Max level: 18
+Nodes per hierarchy level:
+  Level 0: 2 nodes
+  Level 1: 49 nodes
+  Level 2: 289 nodes
+  Level 3: 1099 nodes
+  Level 4: 2682 nodes
+  Level 5: 6239 nodes
+  Level 6: 5094 nodes
+  Level 7: 4764 nodes
+  Level 8: 4398 nodes
+  Level 9: 3807 nodes
+  Level 10: 3054 nodes
+  Level 11: 2153 nodes
+  Level 12: 1267 nodes
+  Level 13: 611 nodes
+  Level 14: 316 nodes
+  Level 15: 195 nodes
+  Level 16: 109 nodes
+  Level 17: 58 nodes
+  Level 18: 5 nodes
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 36191
+Layer start indices: [0, 2, 51, 340, 1439, 4121, 10360, 15454, 20218, 24616, 28423, 31477, 33630, 34897, 35508, 35824, 36019, 36128, 36186, 36191]
+
+Example indices:
+ Level 0:
+  • GO:0003674 (Index 0): molecular_function
+  • GO:0008150 (Index 1): biological_process
+ Level 1:
+  • GO:0002376 (Index 2): immune system process
+  • GO:0003774 (Index 3): cytoskeletal motor activity
+  • GO:0003824 (Index 4): catalytic activity
+ Level 2:
+  • GO:0000156 (Index 51): phosphorelay response regulator activity
+  • GO:0000995 (Index 52): RNA polymerase III general transcription initiation factor activity
+  • GO:0001070 (Index 53): RNA-binding transcription regulator activity
+
+Pruning graph to max hierarchy level 5...
+Removing 25831 nodes.
+Pruning complete.
+Nodes: 36191 -> 10360 (25831 removed)
+Edges: 71188 -> 13916 (57272 removed)
+
+Calculating sequential indices...
+Sequential indices assigned. Total indexed nodes: 10360
+Layer start indices: [0, 2, 51, 340, 1439, 4121, 10360]
+
+Example indices:
+ Level 0:
+  • GO:0003674 (Index 0): molecular_function
+  • GO:0008150 (Index 1): biological_process
+ Level 1:
+  • GO:0002376 (Index 2): immune system process
+  • GO:0003774 (Index 3): cytoskeletal motor activity
+  • GO:0003824 (Index 4): catalytic activity
+ Level 2:
+  • GO:0000156 (Index 51): phosphorelay response regulator activity
+  • GO:0000995 (Index 52): RNA polymerase III general transcription initiation factor activity
+  • GO:0001070 (Index 53): RNA-binding transcription regulator activity
+Sequential indices and edge index recalculated for the pruned graph.
+Available columns in GAF DataFrame:
+['DB', 'DB_Object_ID', 'DB_Object_Symbol', 'Qualifier', 'GO_ID', 'DB_Reference', 'Evidence_Code', 'With_From', 'Aspect', 'DB_Object_Name', 'DB_Object_Synonym', 'DB_Object_Type', 'Taxon', 'Date', 'Assigned_By', 'Annotation_Extension', 'Gene_Product_Form_ID', 'Replacement_GO_ID']
+
+Adding protein layer starting at index 10360
+Added 8803 proteins to the graph
+Created 59595 protein-GO term edges
+Skipped 461352 annotations with GO terms not in the graph
