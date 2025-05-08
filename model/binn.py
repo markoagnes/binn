@@ -72,11 +72,11 @@ class SparseNetwork(torch.nn.Module):
         return activations[self.layer_indices[-2]:]
 
 
-class SparseNetwork2(nn.Module):
+class SparseNetworkMultiHead(nn.Module):
     def __init__(self, input_dim, hidden_dims, output_dim):
-        super(SparseNetwork2, self).__init__()
+        super(SparseNetworkMultiHead, self).__init__()
 
-        #  dimensions
+        # dimensions
         self.layer_dims = [input_dim] + hidden_dims + [output_dim]
 
         self.layer_indices = [0]
@@ -86,17 +86,20 @@ class SparseNetwork2(nn.Module):
         self.total_nodes = self.layer_indices[-1]
         self.input_dim = input_dim 
 
-        # Parameters (weight initialized in set_connections)
+        # Parameters
         self.weight = None
-        # Bias only for non-input nodes
-        self.bias = nn.Parameter(torch.zeros(self.total_nodes - self.input_dim)) 
+        self.bias = nn.Parameter(torch.zeros(self.total_nodes - self.input_dim))
         self.edge_index = None
-        self.sparse_indices = None 
+        self.sparse_indices = None
 
+        # Batch normalization
+        self.batch_norms = nn.ModuleList([
+            nn.BatchNorm1d(dim) for dim in hidden_dims
+        ])
 
-        # Add layer normalization between layers
-        self.layer_norms = nn.ModuleList([
-            nn.LayerNorm(dim) for dim in hidden_dims
+        # Prediction heads for each hidden layer
+        self.prediction_heads = nn.ModuleList([
+            nn.Linear(dim, output_dim) for dim in hidden_dims
         ])
 
     def set_connections(self, edge_index):
@@ -106,12 +109,8 @@ class SparseNetwork2(nn.Module):
         # sparse weight matrix indices
         self.sparse_indices = edge_index.clone()
 
-        # self.weight = nn.Parameter(torch.Tensor(num_edges).normal_(0, 0.1))
-
-        
         # Better weight initialization 
         # Calculate fan_in for each node (how many inputs each node receives)
-        # Count occurrences of each target node in edge_index[1]
         unique_targets, counts = torch.unique(edge_index[1], return_counts=True)
 
         # Create a mapping from target node to fan_in
@@ -124,22 +123,18 @@ class SparseNetwork2(nn.Module):
                                         for target in edge_index[1]])
 
         # Initialize weights based on fan_in
-        # Use Kaiming/He initialization principle adapted for sparse connections
-        # This will scale weights differently for each connection based on target's fan_in
+        # Xavier/Glorot initialization may work better with tanh
         weight_scales = 1.0 / torch.sqrt(fan_in_per_edge.float())
         self.weight = nn.Parameter(torch.randn(num_edges) * weight_scales)
-
-        
-
 
     def forward(self, x):
         batch_size = x.size(0)
 
-        # Initialize the main activations tensor that will be updated
+        # Initialize activations
         activations = torch.zeros(batch_size, self.total_nodes, device=x.device, dtype=x.dtype)
-        activations[:, :self.input_dim] = x # Initial input assignment
+        activations[:, :self.input_dim] = x
 
-        # Prepare sparse weights 
+        # Prepare sparse weights
         sparse_indices_dev = self.sparse_indices.to(x.device)
         weights_dev = self.weight.to(x.device)
         sparse_weights = torch.sparse_coo_tensor(
@@ -148,50 +143,287 @@ class SparseNetwork2(nn.Module):
             (self.total_nodes, self.total_nodes),
             device=x.device
         )
-        sparse_weights_t = sparse_weights.t() # Pre-transpose
+        sparse_weights_t = sparse_weights.t()
 
-        
-        # Keep track of the activations from the *previous* step to use as input for matmul
-        prev_activations = activations.clone() # initial activations
+        # For storing layer predictions
+        layer_predictions = []
 
-        for i in range(1, len(self.layer_dims)): # Loop from first hidden layer to output layer
+        prev_activations = activations.clone()
+
+        # Process each layer
+        for i in range(1, len(self.layer_dims)):
             layer_start_idx = self.layer_indices[i]
             layer_end_idx = self.layer_indices[i+1]
 
-            # Calculate weighted sum using 'prev_activations'
-            # This uses the state *before* this layer's update was applied to 'activations'
-            # The tensor prev_activations.t() is the one autograd needs to track correctly
+            # Calculate weighted sum
             weighted_sum_all_nodes = torch.sparse.mm(sparse_weights_t, prev_activations.t()).t()
-
-            # Select the portion for the current layer
             current_layer_weighted_sum = weighted_sum_all_nodes[:, layer_start_idx:layer_end_idx]
 
-            # Bias and Activation 
+            # Apply bias
             bias_start_index = layer_start_idx - self.input_dim
             bias_end_index = layer_end_idx - self.input_dim
-            # Ensure bias is on the correct device
             layer_bias = self.bias[bias_start_index:bias_end_index].to(x.device)
 
-            # Apply activation (ReLU for hidden, none for output)
-            if i < len(self.layer_dims) - 1: # Hidden layer
-                activated_layer_output = F.relu(self.layer_norms[i-1](current_layer_weighted_sum + layer_bias))
-            else: # Output layer
+            # Apply activation for hidden layers
+            if i < len(self.layer_dims) - 1:  # Hidden layer
+                normalized = self.batch_norms[i-1](current_layer_weighted_sum + layer_bias)
+                activated_layer_output = torch.tanh(normalized)
+
+                # Get prediction from this layer
+                layer_pred = self.prediction_heads[i-1](activated_layer_output)
+                layer_predictions.append(layer_pred)
+            else:  # Output layer
                 activated_layer_output = current_layer_weighted_sum + layer_bias
 
-            # Update the main 'activations' tensor INPLACE for the current layer 
-            # This modifies 'activations'. Crucially, 'prev_activations' used above is NOT modified here.
+            # Update activations
             activations[:, layer_start_idx:layer_end_idx] = activated_layer_output
-
-            # Prepare 'prev_activations' for the NEXT iteration 
-            # After 'activations' has been updated with this layer's result,
-            # clone it so the *next* iteration's sparse_mm uses the correct, updated input state.
             prev_activations = activations.clone()
 
+        # Average all layer predictions
+        if layer_predictions:
+            avg_prediction = torch.stack(layer_predictions).mean(dim=0)
 
-        # Return the output slice from the final 'activations' state
-        output_layer_start = self.layer_indices[-2]
-        output_layer_end = self.layer_indices[-1]
-        return activations[:, output_layer_start:output_layer_end]
+            # Apply sigmoid to the averaged prediction as in the papers
+            avg_prediction = torch.sigmoid(avg_prediction)
+            return avg_prediction
+        else:
+            # Fallback to final layer output if no predictions (should never happen)
+            output_layer_start = self.layer_indices[-2]
+            output_layer_end = self.layer_indices[-1]
+            return activations[:, output_layer_start:output_layer_end]
+
+
+
+
+# # version 3: tanh, batch norm
+# class SparseNetwork2(nn.Module):
+#     def __init__(self, input_dim, hidden_dims, output_dim):
+#         super(SparseNetwork2, self).__init__()
+
+#         # dimensions
+#         self.layer_dims = [input_dim] + hidden_dims + [output_dim]
+
+#         self.layer_indices = [0]
+#         for dim in self.layer_dims:
+#             self.layer_indices.append(self.layer_indices[-1] + dim)
+
+#         self.total_nodes = self.layer_indices[-1]
+#         self.input_dim = input_dim 
+
+#         # Parameters (weight initialized in set_connections)
+#         self.weight = None
+#         # Bias only for non-input nodes
+#         self.bias = nn.Parameter(torch.zeros(self.total_nodes - self.input_dim)) 
+#         self.edge_index = None
+#         self.sparse_indices = None 
+
+#         # Replace layer normalization with batch normalization
+#         self.batch_norms = nn.ModuleList([
+#             nn.BatchNorm1d(dim) for dim in hidden_dims
+#         ])
+
+#     def set_connections(self, edge_index):
+#         num_edges = edge_index.size(1)
+#         self.edge_index = edge_index
+
+#         # sparse weight matrix indices
+#         self.sparse_indices = edge_index.clone()
+
+#         # Better weight initialization 
+#         # Calculate fan_in for each node (how many inputs each node receives)
+#         unique_targets, counts = torch.unique(edge_index[1], return_counts=True)
+
+#         # Create a mapping from target node to fan_in
+#         node_to_fan_in = {}
+#         for node, count in zip(unique_targets.tolist(), counts.tolist()):
+#             node_to_fan_in[node] = count
+
+#         # Create a fan_in tensor matching edge_index order
+#         fan_in_per_edge = torch.tensor([node_to_fan_in.get(target.item(), 1) 
+#                                         for target in edge_index[1]])
+
+#         # Initialize weights based on fan_in
+#         # Xavier/Glorot initialization may work better with tanh
+#         weight_scales = 1.0 / torch.sqrt(fan_in_per_edge.float())
+#         self.weight = nn.Parameter(torch.randn(num_edges) * weight_scales)
+
+#     def forward(self, x):
+#         batch_size = x.size(0)
+
+#         # Initialize the main activations tensor that will be updated
+#         activations = torch.zeros(batch_size, self.total_nodes, device=x.device, dtype=x.dtype)
+#         activations[:, :self.input_dim] = x # Initial input assignment
+
+#         # Prepare sparse weights 
+#         sparse_indices_dev = self.sparse_indices.to(x.device)
+#         weights_dev = self.weight.to(x.device)
+#         sparse_weights = torch.sparse_coo_tensor(
+#             sparse_indices_dev,
+#             weights_dev,
+#             (self.total_nodes, self.total_nodes),
+#             device=x.device
+#         )
+#         sparse_weights_t = sparse_weights.t() # Pre-transpose
+
+#         # Keep track of the activations from the *previous* step to use as input for matmul
+#         prev_activations = activations.clone() # initial activations
+
+#         for i in range(1, len(self.layer_dims)): # Loop from first hidden layer to output layer
+#             layer_start_idx = self.layer_indices[i]
+#             layer_end_idx = self.layer_indices[i+1]
+
+#             # Calculate weighted sum using 'prev_activations'
+#             weighted_sum_all_nodes = torch.sparse.mm(sparse_weights_t, prev_activations.t()).t()
+
+#             # Select the portion for the current layer
+#             current_layer_weighted_sum = weighted_sum_all_nodes[:, layer_start_idx:layer_end_idx]
+
+#             # Bias and Activation 
+#             bias_start_index = layer_start_idx - self.input_dim
+#             bias_end_index = layer_end_idx - self.input_dim
+#             layer_bias = self.bias[bias_start_index:bias_end_index].to(x.device)
+
+#             # Apply activation (tanh for hidden, none for output)
+#             if i < len(self.layer_dims) - 1: # Hidden layer
+#                 # Apply batch norm and tanh activation
+#                 normalized = self.batch_norms[i-1](current_layer_weighted_sum + layer_bias)
+#                 activated_layer_output = torch.tanh(normalized)
+#             else: # Output layer
+#                 activated_layer_output = current_layer_weighted_sum + layer_bias
+
+#             # Update activations tensor with current layer's output
+#             activations[:, layer_start_idx:layer_end_idx] = activated_layer_output
+
+#             # Prepare for next iteration
+#             prev_activations = activations.clone()
+
+#         # Return the output slice
+#         output_layer_start = self.layer_indices[-2]
+#         output_layer_end = self.layer_indices[-1]
+#         return activations[:, output_layer_start:output_layer_end]
+
+
+# version 2: layer norm, relu
+# class SparseNetwork2(nn.Module):
+#     def __init__(self, input_dim, hidden_dims, output_dim):
+#         super(SparseNetwork2, self).__init__()
+
+#         #  dimensions
+#         self.layer_dims = [input_dim] + hidden_dims + [output_dim]
+
+#         self.layer_indices = [0]
+#         for dim in self.layer_dims:
+#             self.layer_indices.append(self.layer_indices[-1] + dim)
+
+#         self.total_nodes = self.layer_indices[-1]
+#         self.input_dim = input_dim 
+
+#         # Parameters (weight initialized in set_connections)
+#         self.weight = None
+#         # Bias only for non-input nodes
+#         self.bias = nn.Parameter(torch.zeros(self.total_nodes - self.input_dim)) 
+#         self.edge_index = None
+#         self.sparse_indices = None 
+
+
+#         # Add layer normalization between layers
+#         self.layer_norms = nn.ModuleList([
+#             nn.LayerNorm(dim) for dim in hidden_dims
+#         ])
+
+#     def set_connections(self, edge_index):
+#         num_edges = edge_index.size(1)
+#         self.edge_index = edge_index
+
+#         # sparse weight matrix indices
+#         self.sparse_indices = edge_index.clone()
+
+#         # self.weight = nn.Parameter(torch.Tensor(num_edges).normal_(0, 0.1))
+
+        
+#         # Better weight initialization 
+#         # Calculate fan_in for each node (how many inputs each node receives)
+#         # Count occurrences of each target node in edge_index[1]
+#         unique_targets, counts = torch.unique(edge_index[1], return_counts=True)
+
+#         # Create a mapping from target node to fan_in
+#         node_to_fan_in = {}
+#         for node, count in zip(unique_targets.tolist(), counts.tolist()):
+#             node_to_fan_in[node] = count
+
+#         # Create a fan_in tensor matching edge_index order
+#         fan_in_per_edge = torch.tensor([node_to_fan_in.get(target.item(), 1) 
+#                                         for target in edge_index[1]])
+
+#         # Initialize weights based on fan_in
+#         # Use Kaiming/He initialization principle adapted for sparse connections
+#         # This will scale weights differently for each connection based on target's fan_in
+#         weight_scales = 1.0 / torch.sqrt(fan_in_per_edge.float())
+#         self.weight = nn.Parameter(torch.randn(num_edges) * weight_scales)
+
+        
+
+
+#     def forward(self, x):
+#         batch_size = x.size(0)
+
+#         # Initialize the main activations tensor that will be updated
+#         activations = torch.zeros(batch_size, self.total_nodes, device=x.device, dtype=x.dtype)
+#         activations[:, :self.input_dim] = x # Initial input assignment
+
+#         # Prepare sparse weights 
+#         sparse_indices_dev = self.sparse_indices.to(x.device)
+#         weights_dev = self.weight.to(x.device)
+#         sparse_weights = torch.sparse_coo_tensor(
+#             sparse_indices_dev,
+#             weights_dev,
+#             (self.total_nodes, self.total_nodes),
+#             device=x.device
+#         )
+#         sparse_weights_t = sparse_weights.t() # Pre-transpose
+
+        
+#         # Keep track of the activations from the *previous* step to use as input for matmul
+#         prev_activations = activations.clone() # initial activations
+
+#         for i in range(1, len(self.layer_dims)): # Loop from first hidden layer to output layer
+#             layer_start_idx = self.layer_indices[i]
+#             layer_end_idx = self.layer_indices[i+1]
+
+#             # Calculate weighted sum using 'prev_activations'
+#             # This uses the state *before* this layer's update was applied to 'activations'
+#             # The tensor prev_activations.t() is the one autograd needs to track correctly
+#             weighted_sum_all_nodes = torch.sparse.mm(sparse_weights_t, prev_activations.t()).t()
+
+#             # Select the portion for the current layer
+#             current_layer_weighted_sum = weighted_sum_all_nodes[:, layer_start_idx:layer_end_idx]
+
+#             # Bias and Activation 
+#             bias_start_index = layer_start_idx - self.input_dim
+#             bias_end_index = layer_end_idx - self.input_dim
+#             # Ensure bias is on the correct device
+#             layer_bias = self.bias[bias_start_index:bias_end_index].to(x.device)
+
+#             # Apply activation (ReLU for hidden, none for output)
+#             if i < len(self.layer_dims) - 1: # Hidden layer
+#                 activated_layer_output = F.relu(self.layer_norms[i-1](current_layer_weighted_sum + layer_bias))
+#             else: # Output layer
+#                 activated_layer_output = current_layer_weighted_sum + layer_bias
+
+#             # Update the main 'activations' tensor INPLACE for the current layer 
+#             # This modifies 'activations'. Crucially, 'prev_activations' used above is NOT modified here.
+#             activations[:, layer_start_idx:layer_end_idx] = activated_layer_output
+
+#             # Prepare 'prev_activations' for the NEXT iteration 
+#             # After 'activations' has been updated with this layer's result,
+#             # clone it so the *next* iteration's sparse_mm uses the correct, updated input state.
+#             prev_activations = activations.clone()
+
+
+#         # Return the output slice from the final 'activations' state
+#         output_layer_start = self.layer_indices[-2]
+#         output_layer_end = self.layer_indices[-1]
+#         return activations[:, output_layer_start:output_layer_end]
 
 
     # def forward(self, x):

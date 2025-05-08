@@ -1,7 +1,7 @@
 from pathway_network import PathwayNetwork
 import pandas as pd
 import numpy as np
-from binn import SparseNetwork2
+from binn import SparseNetworkMultiHead
 
 import os
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
@@ -19,8 +19,8 @@ import torch.optim as optim
 # wandb 
 import wandb
 
-batch_size = 8
-learning_rate = 1e-3
+batch_size = 64
+learning_rate = 3e-3
 num_epochs = 50
 
 wandb = wandb.init(
@@ -39,20 +39,20 @@ wandb = wandb.init(
 obo_file_path = r'/home/markoa/workspace/data/ProstateCancer/go-basic.obo'
 gaf_file_path = r'/home/markoa/workspace/data/ProstateCancer/goa_human.gaf'
 protein_input_nodes_path = r'/home/markoa/workspace/data/ProstateCancer/cnv_input_genes.csv'
-preprocessed_gaf_file_path = r'/home/markoa/workspace/data/ProstateCancer/goa_human_processed_filtered.gaf'
+preprocessed_gaf_file_path = r'/home/markoa/workspace/data/ProstateCancer/goa_human_processed_filtered_8.gaf'
 
 # Read the protein input nodes
 protein_input_nodes = pd.read_csv(protein_input_nodes_path)
 
 # Create and process the network
-root_nodes_to_include = ['biological_process', 'molecular_function']
+root_nodes_to_include = ['biological_process', 'cellular_component', 'molecular_function']
 pathway_net = PathwayNetwork(obo_path=obo_file_path,
                              protein_input_nodes=protein_input_nodes,
                              root_nodes_to_include=root_nodes_to_include,
                              gaf_is_processed=True,
                              gaf_file_path=gaf_file_path,
                              preprocessed_gaf_file_path=preprocessed_gaf_file_path,
-                             max_level=5,
+                             max_level=8,
                              verbose=True)
 
 
@@ -84,7 +84,7 @@ output_dim = 1
 
 
 # Create network
-model = SparseNetwork2(input_dim, hidden_dims, output_dim)
+model = SparseNetworkMultiHead(input_dim, hidden_dims, output_dim)
 
 
 # Create mapping between pathway indices and network indices
@@ -121,6 +121,14 @@ for s, t in zip(pathway_net.edge_index[0], pathway_net.edge_index[1]):
 
 
 edge_index = torch.tensor([sources, targets])
+
+# max index in the edge index
+max_index = max(edge_index[0].max(), edge_index[1].max())
+print(f"Max index in edge index: {max_index.item()}")  # Should be 9013
+
+# total nodes in the network
+total_nodes = pathway_net.graph.number_of_nodes()
+print(f"Total nodes in the network: {total_nodes}")  # Should be 9013
 
 # Set connections
 model.set_connections(edge_index)
@@ -191,7 +199,7 @@ print(f"Shape of aligned X_cnv: {X_cnv_aligned.shape}") # Should be [num_samples
 
 
 # Split the data
-test_set_size = 0.2 # Use 20% of the data for testing 
+test_set_size = 0.05 
 random_seed = 42    
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -225,7 +233,6 @@ class CNVDataset(Dataset):
 
 
 # Create separate Datasets and DataLoaders
-batch_size = 8
 train_dataset = CNVDataset(X_train, y_train)
 test_dataset = CNVDataset(X_test, y_test)
 
@@ -261,18 +268,15 @@ optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=2e-4,
 # )
 
 # Warmup + cosine schedule instead of ReduceLROnPlateau
-scheduler = torch.optim.lr_scheduler.OneCycleLR(
-    optimizer, 
-    max_lr=learning_rate,
-    total_steps=num_epochs * len(train_loader),
-    pct_start=0.1  # 10% warmup
-)
+# scheduler = torch.optim.lr_scheduler.OneCycleLR(
+#     optimizer, 
+#     max_lr=learning_rate,
+#     total_steps=num_epochs * len(train_loader),
+#     pct_start=0.1  # 10% warmup
+# )
 
 
 # Training loop
-import math
-num_epochs = 50
-
 model.to(device)
 
 # pos_weight = torch.tensor([math.sqrt(neg_count/pos_count)]).to(device)  
@@ -281,7 +285,9 @@ model.to(device)
 
 # Define Loss Function 
 # criterion = nn.BCEWithLogitsLoss()
-criterion = nn.BCEWithLogitsLoss()
+
+# if i use skip connections and averaged predictions, applied sigmoid, then the loss function is simple BCE
+criterion = nn.BCELoss()
 
 
 torch.autograd.set_detect_anomaly(True) 
@@ -351,7 +357,7 @@ for epoch in range(num_epochs):
     print(f"Epoch [{epoch+1}/{num_epochs}] Average Training Loss: {avg_epoch_loss:.4f}")
 
     # Update the learning rate based on validation performance
-    scheduler.step(avg_epoch_loss)
+    # scheduler.step(avg_epoch_loss)
 
     #  log the current learning rate to wandb
     current_lr = optimizer.param_groups[0]['lr']

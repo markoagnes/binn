@@ -603,7 +603,7 @@ class PathwayNetwork:
         # Write the updated GAF DataFrame to a new file
         if self.verbose:
             print("Writing preprocessed GAF DataFrame to file...")
-        output_gaf_path = self.gaf_file_path.replace('.gaf', '_processed_filtered.gaf')
+        output_gaf_path = self.gaf_file_path.replace('.gaf', '_processed_filtered_8.gaf')
         write_gaf_with_replacements(self.gaf_df, output_gaf_path)
 
         return self.gaf_df
